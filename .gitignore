@@ -1,0 +1,30 @@
+ # Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Frontend Build Output
+frontend/dist/
+
+# Environment Variables
+.env
+.env.local
+.env.development
+.env.production
+
+# Logs
+*.log
+logs/
+
+# Editor and OS Files
+.DS_Store
+*.swp
+*.swo
+.idea/
+*.code-workspace
+
+# Docker (optional, if you’re using it locally)
+Dockerfile
+docker-compose.yml
+.dockerignore
+.vercel
