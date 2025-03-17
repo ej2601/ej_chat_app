@@ -6,25 +6,26 @@ const dayjs = require('dayjs');
 const relativeTime = require('dayjs/plugin/relativeTime');
 dayjs.extend(relativeTime);
 
-const { createClient } = require('redis');
-
-// // Create and connect the Memurai (Redis) client
-const redisClient = createClient({ url: process.env.MEMURAI_URL });
-redisClient.connect().catch(console.error);
+// Create and connect the Memurai (Redis) client
+// const redisClient = createClient({ url: process.env.MEMURAI_URL });
+// redisClient.connect().catch(console.error);
 
 /**
  * Get all chat rooms and their active user count (from Redis)
- */
+*/
 const getChatRooms = async (req, res) => {
+  // console.log("hello -", req.app.get('redisClient'));
+  const redisClient = req.app.get('redisClient');
   try {
     // Fetch all chat rooms from MongoDB and populate the creator's details
     const rooms = await ChatRoom.find({})
       .sort({ createdAt: -1 }) // Most recent first
       .populate('createdBy', 'name avatar')
       .exec();
-
+      
     const roomsWithCount = await Promise.all(
       rooms.map(async (room) => {
+        
         // Retrieve the full online user objects from Redis for this room
         const usersHash = await redisClient.hGetAll(`chatroom:${room._id}:users`);
         const onlineUsers = Object.values(usersHash).map(u => JSON.parse(u));
@@ -82,6 +83,5 @@ const createChatRoom = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
 
 module.exports = { getChatRooms, createChatRoom };

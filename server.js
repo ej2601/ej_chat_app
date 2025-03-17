@@ -40,7 +40,7 @@ mongoose.connect(process.env.MONGO_URI, {
 // Memurai (Redis) Client
 const redisClient = createClient({ url: process.env.MEMURAI_URL });
 redisClient.connect().catch(console.error);
-
+app.set('redisClient', redisClient);
 // Session Middleware
 app.use(session({
     store: new RedisStore({ client: redisClient }),

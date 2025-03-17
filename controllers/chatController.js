@@ -11,7 +11,7 @@ const ChatRoom = require('../models/ChatRoom');
 // Create and connect the Memurai (Redis) client
 const redisClient = createClient({ url: process.env.MEMURAI_URL });
 redisClient.connect().catch(console.error);
-
+// console.log('MEMURAI_URL_chat:', process.env.MEMURAI_URL);
 /**
  * Handle when a user joins a room:
  * - Add the socket to the room.
@@ -51,7 +51,7 @@ exports.handleJoinRoom = async (data, socket, io) => {
   // Now filter: awayIds are those not included in onlineIds
   const awayIds = totalParticipantIdsStr.filter(id => !onlineIds.includes(id));
 
-  console.log("away:", awayIds, onlineIds, totalParticipantIds);
+  // console.log("away:", awayIds, onlineIds, totalParticipantIds);
   // Retrieve away users' details from the User collection (assuming each user document has name, avatar, etc.)
   const awayUsers = await User.find({ _id: { $in: awayIds } })
     .select("username name avatar")
@@ -65,7 +65,7 @@ exports.handleJoinRoom = async (data, socket, io) => {
 
   const createdAtHuman = dayjs(roomDetails.createdAt).fromNow();
 
-  console.log(createdAtHuman);
+  // console.log(createdAtHuman);
 
   // console.log(roomId, userId, username, roomDetails);
   // Emit an update to all clients in the room with the latest online users and room details
